@@ -3,6 +3,7 @@
 		
     <random-video></random-video>
     <video-uploader></video-uploader>
+    <recent-videos-bar></recent-videos-bar>
   </div>
 </template>
 
@@ -10,6 +11,7 @@
 
 import RandomVideo from './RandomVideo.vue'
 import VideoUploader from './VideoUploader.vue'
+import RecentVideosBar from './RecentVideosBar.vue'
 
 export default {
   data () {
@@ -32,7 +34,8 @@ export default {
   },
   components: {
     randomVideo: RandomVideo,
-    videoUploader: VideoUploader
+    videoUploader: VideoUploader,
+    recentVideosBar: RecentVideosBar
   }
 }
 </script>

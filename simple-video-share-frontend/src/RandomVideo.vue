@@ -10,10 +10,14 @@
 </template>
 
 <script>
+
+    import { eventBus } from './main.js'
+
     export default {
         data () {
             return {
-                randVideoUrl: ''
+                randVideoUrl: '',
+                recentVideos: []
             }
         },
         mounted: function() {
@@ -21,6 +25,15 @@
         },
         methods: {
             loadRandVideo() {
+                // push the recent video to the stack before loading a new one
+                if (this.randVideoUrl != ''){
+                    this.recentVideos.push(this.randVideoUrl);
+                    // this.recentVideos.unshift(this.randVideoUrl);
+                    // this.recentVideos.splice(0, 0, this.randVideoUrl);
+                    // notify that the list is updated
+                    eventBus.$emit("recentVideos", this.recentVideos);
+                }
+                
                 this.$http.get('http://localhost:8080/randomvideo')
                     .then(response => { return response.json()})
                     .then(data => {
@@ -34,7 +47,20 @@
                         // this.$refs.videoElm.play();
                         // console.log(this.$el.querySelector("#randVideoElm"));
                     });
+            },
+            loadAndPlayVideo() {
+                let videoElm = this.$el.querySelector("#randVideoElm");   
+                // console.log(videoElm);            
+                videoElm.load();
+                videoElm.play();     
             }
+        },
+        created() {
+            eventBus.$on('selectedVideo', (data) => {
+                console.log("selected video : " + data);
+                this.randVideoUrl = data;
+                this.loadAndPlayVideo();
+            })
         }
     }
 

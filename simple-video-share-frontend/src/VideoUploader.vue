@@ -30,18 +30,21 @@
         },
         methods: {
             uploadVideo() {
-                this.disableSubmit = true;
-                this.uploadStatus.uploading = 1;
-                this.uploadStatus.fail = 0;
-                this.uploadStatus.success = 0;
+
                 var formData = new FormData();
                 // for single file
                 // document.getElementById("file").files[0]
                 var selectedFile = this.$refs.inputFile.files[0];
                 if (selectedFile == undefined || selectedFile == null ){
-                    console.log("select a file");
+                    alert("select a file");
                     return;
                 }
+
+                this.disableSubmit = true;
+                this.uploadStatus.uploading = 1;
+                this.uploadStatus.fail = 0;
+                this.uploadStatus.success = 0;
+
                 formData.append('file', selectedFile);
                 this.$http.post('http://localhost:8080/uploader', formData, {headers: {'Content-Type': 'amultipart/form-data'}} )
                     .then(
