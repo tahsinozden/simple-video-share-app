@@ -1,24 +1,23 @@
 package ozden.app.controller;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@CrossOrigin(allowedHeaders = "http://localhost:8081")
-@RestController
+@Service
 public class VideoService {
-	@Value("${multipart.location}")
-	String savePath;
-	
 
-	@RequestMapping(value="/randomvideo")
-	public VideoResponse getRandomVideo(){
-		File folder = new File(savePath);
+	public String getRandonVideo(String videoFilesPath) {
+		File folder = new File(videoFilesPath);
 		Random rn = new Random();
 		File[] allFiles = folder.listFiles();
 		ArrayList<File> supportedFiles = new ArrayList<>();
@@ -29,10 +28,23 @@ public class VideoService {
 			}
 		}
 		String name = supportedFiles.get(rn.nextInt(supportedFiles.size())).getName();
-		return  new VideoResponse(name, "/allvideos/" + name );
-//		return "/allvideos/" + supportedFiles.get(rn.nextInt(supportedFiles.size())).getName();
+		return name;
 	}
-	
+
+	public InputStream getVideoStream(String videoPath) {
+
+		InputStream is = null;
+
+		try {
+			is = new FileInputStream(videoPath);
+//			is.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return is;
+	}
+
 	class VideoResponse {
 		public String name;
 		public String url;
