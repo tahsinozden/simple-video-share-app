@@ -3,7 +3,9 @@ package ozden.app.video;
 import java.io.File;
 import java.io.IOException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,14 +21,15 @@ public class VideoUploader {
 	String savePath;
 	
 	@RequestMapping(value="/uploader", method=RequestMethod.POST, consumes = MediaType.ALL_VALUE)
-	public String uploader(@RequestPart MultipartFile file /*, @RequestParam String textline*/) throws IllegalStateException, IOException {
+	public ResponseEntity<ResponseBean> uploader(@RequestPart MultipartFile file) throws IllegalStateException, IOException {
 		File videoFile = new File(savePath + "file_" + System.currentTimeMillis() + "_" + file.getOriginalFilename());
 		file.transferTo(videoFile);
-//		return savePath;
-		return "redirect:index.html";
+		return new SuccessResponse();
 	}
-	
-	class RequestData {
-		public MultipartFile file;
+
+	class SuccessResponse extends ResponseEntity<ResponseBean> {
+		public SuccessResponse() {
+			super(new ResponseBean("success", HttpStatus.OK), HttpStatus.OK);
+		}
 	}
 }
