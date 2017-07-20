@@ -1,4 +1,4 @@
-package ozden.app.controller;
+package ozden.app.video;
 
 /**
  * Created by tahsin on 2017-05-05.
@@ -10,12 +10,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Random;
 
 @CrossOrigin(allowedHeaders = "http://localhost:8081")
 @RestController
