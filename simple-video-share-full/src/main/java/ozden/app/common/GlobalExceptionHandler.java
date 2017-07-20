@@ -1,4 +1,4 @@
-package ozden.app.controller;
+package ozden.app.common;
 
 import org.apache.catalina.servlet4preview.http.HttpServletRequest;
 import org.apache.log4j.Logger;
