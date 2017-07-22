@@ -1,22 +1,46 @@
 <template> 
     <div>
+
         <h3>Recent Videos</h3>
-        <div class="row">
-            <!--<div v-for="(video, index) in recentVideos"  class="col-xs-3 col-md-3">                
-                <video  width="200px"height="100px" @click="selectVideo(index)">
-                    <source :src="video" type="video/mp4" ></source>
-                </video>                            
-            </div>-->
+        <div class="scrollmenu">
+            <div v-for="(video, index) in recentVideos">
+                <div>
+                    <video @click="selectVideo(index)">
+                        <source :src="video" type="video/mp4"></source>
+                    </video>
+                </div>
+            </div>
         </div>
-        <!-- TODO: make a horizontal scroll -->
-        <div v-for="(video, index) in recentVideos"  class="col-md-1">                
-            <video  width="200px"height="100px" @click="selectVideo(index)">
-                <source :src="video" type="video/mp4" ></source>
-            </video>                            
-        </div>
+
     </div>
 </template>
 
+<<style>
+
+div.scrollmenu {
+    background-color: #333;
+    overflow: auto;
+    white-space: nowrap;
+}
+
+div.scrollmenu div {
+    display: inline-block;
+    color: white;
+    text-align: center;
+    padding: 14px;
+    text-decoration: none;
+}
+
+div.scrollmenu video {
+    width: 200px;
+    height: 100px;
+}
+
+div.scrollmenu video:hover {
+    background-color: #777;
+}
+
+</style>
 
 <script>
     import { eventBus } from './main.js'
@@ -49,9 +73,8 @@
         created() {
             eventBus.$on("recentVideos", (videos) => {
                 console.log("new video added");
-                // console.log(videos);
-                // this.recentVideos = videos.length > 3 ? videos.slice(videos.length-3, videos.length) : videos;
-                this.recentVideos = videos
+                // TODO: show videos in reverse order
+                this.recentVideos = videos;
                 console.log(this.recentVideos);
             });
         },
