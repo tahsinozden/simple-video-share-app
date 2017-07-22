@@ -12,6 +12,7 @@
 <script>
 
     import { eventBus } from './main.js'
+    import { config } from './config.js'
 
     export default {
         data () {
@@ -34,11 +35,11 @@
                     eventBus.$emit("recentVideos", this.recentVideos);
                 }
                 
-                this.$http.get('http://localhost:8080/randomvideo')
+                this.$http.get(config.BACK_END_URL + "/randomvideo")
                     .then(response => { return response.json()})
                     .then(data => {
                         console.log(data);
-                        this.randVideoUrl = "http://localhost:8080" + data.url;
+                        this.randVideoUrl = config.BACK_END_URL + data.url;
                         let videoElm = this.$el.querySelector("#randVideoElm");
                         videoElm.load();
                         videoElm.play();

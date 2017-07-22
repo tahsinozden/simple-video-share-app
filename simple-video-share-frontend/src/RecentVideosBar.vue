@@ -1,19 +1,16 @@
 <template> 
     <div>
         <h3>Recent Videos</h3>
+
         <div class="row">
-            <!--<div v-for="(video, index) in recentVideos"  class="col-xs-3 col-md-3">                
-                <video  width="200px"height="100px" @click="selectVideo(index)">
-                    <source :src="video" type="video/mp4" ></source>
-                </video>                            
-            </div>-->
+            <!-- TODO: make a horizontal scroll -->
+            <div v-for="(video, index) in recentVideos">
+                <video class="col-md-2" @click="selectVideo(index)">
+                    <source :src="video" type="video/mp4"></source>
+                </video>
+            </div>
         </div>
-        <!-- TODO: make a horizontal scroll -->
-        <div v-for="(video, index) in recentVideos"  class="col-md-1">                
-            <video  width="200px"height="100px" @click="selectVideo(index)">
-                <source :src="video" type="video/mp4" ></source>
-            </video>                            
-        </div>
+
     </div>
 </template>
 
