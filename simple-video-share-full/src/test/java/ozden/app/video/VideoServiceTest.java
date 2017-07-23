@@ -2,18 +2,13 @@ package ozden.app.video;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 import ozden.app.common.FileService;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
@@ -35,25 +30,6 @@ public class VideoServiceTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-
-        List<File> allFiles = Arrays.asList(
-                new File("newVideo1.mp4"),
-                new File("newVideo2.mp4"),
-                new File("newVideo3.jpeg"),
-                new File("newVideo4.mp4"),
-                new File("newVideo5.avi"));
-
-        List<File> supportedFiles = Arrays.asList(
-                new File("newVideo1.mp4"),
-                new File("newVideo2.mp4"),
-                new File("newVideo4.mp4"));
-
-
-
-//        when(fileService.getAllFilesUnderDirectory(DIR_PATH)).thenReturn(allFiles);
-//        when(fileService.getAllFilesUnderDirectoryWithFileExtension(DIR_PATH, SupportedVideoFormat.MP4.getName())).thenReturn(supportedFiles);
-
-
     }
 
     @Test
