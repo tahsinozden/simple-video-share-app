@@ -28,7 +28,7 @@ public class VideoController {
     @RequestMapping(value="/randomvideo")
     public VideoResponse getRandomVideo(){
         // get a random video
-        String name = videoService.getRandonVideo(savePath);
+        String name = videoService.getRandomVideo(savePath);
         return  new VideoResponse(name, "/allvideos/" + name );
     }
 
@@ -57,7 +57,6 @@ public class VideoController {
         public String name;
         public String url;
         public VideoResponse(String name, String url) {
-            super();
             this.name = name;
             this.url = url;
         }
