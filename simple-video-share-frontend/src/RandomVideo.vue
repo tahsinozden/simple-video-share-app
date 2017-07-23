@@ -13,8 +13,11 @@
 
     import { eventBus } from './main.js'
     import { config } from './config.js'
+    import { VideoService } from './service/VideoService.js'
 
     export default {
+        mixins: [VideoService],
+        
         data () {
             return {
                 randVideoUrl: '',
@@ -23,17 +26,18 @@
                 recentVideos: []
             }
         },
-        mounted: function() {
-            this.videoElement = this.$el.querySelector("#randVideoElm");
+        mounted() {
+            // this function is from VideoService
+            this.setVideoElement(this.$el.querySelector("#randVideoElm"));
             this.loadRandVideo();
         },
+
         methods: {
             loadRandVideo() {
-                // push the recent video to the stack before loading a new one
+                // send played video to recent videos
                 if (this.randVideoUrl != ''){
-                    this.recentVideos.push(this.randVideoUrl);
-                    // notify that the list is updated
-                    eventBus.$emit("recentVideos", this.recentVideos);
+                    // notify with new url
+                    eventBus.$emit("newVideoUrl", this.randVideoUrl);
                 }
                 
                 this.$http.get(config.BACK_END_URL + "/randomvideo")
@@ -45,20 +49,14 @@
                         
                     });
             },
-            isVideoPlaying(videoElement) {
-                var isPlaying = videoElement.currentTime > 0 && !videoElement.paused && !videoElement.ended 
-                    && videoElement.readyState > 2;
-                return isPlaying;
-            },
+
             loadAndPlayVideo() {    
-                this.videoElement = this.$el.querySelector("#randVideoElm");
-                this.videoElement.load();     
-                // FIXME: fix DOMException: The play() request was interrupted by a new load request.           
-                if (!this.isVideoPlaying(this.videoElement)) {
-                   this.videoElement.play();
-                }   
+                // fixed but still persists in Chrome, works on Firefox
+                this.pauseVideo();
+                this.playVideo();
             }
         },
+
         created() {
             eventBus.$on('selectedVideo', (data) => {
                 console.log("selected video : " + data);
