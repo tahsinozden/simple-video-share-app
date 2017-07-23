@@ -2,13 +2,11 @@ package ozden.app.common;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import ozden.app.video.SupportedVideoFormat;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -22,9 +20,6 @@ public class FileServiceTest {
 
     @Spy
     private FileService fileService = new FileService();
-
-    @Mock
-    private FileInputStream fileInputStream;
 
     private List<File> allFiles;
     private List<File> supportedFiles;
