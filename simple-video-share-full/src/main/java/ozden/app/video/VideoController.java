@@ -57,7 +57,6 @@ public class VideoController {
         public String name;
         public String url;
         public VideoResponse(String name, String url) {
-            super();
             this.name = name;
             this.url = url;
         }
