@@ -3,52 +3,31 @@ package ozden.app.video;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Random;
+import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import ozden.app.common.FileService;
 
 @Service
 public class VideoService {
 
-	public String getRandonVideo(String videoFilesPath) {
-		File folder = new File(videoFilesPath);
-		Random rn = new Random();
-		File[] allFiles = folder.listFiles();
-		ArrayList<File> supportedFiles = new ArrayList<>();
-		for(File file : allFiles){
-			if (file.isFile() && file.getName().toLowerCase().endsWith("mp4")){
-				supportedFiles.add(file);
-				System.out.println(file.getName());
-			}
-		}
-		String name = supportedFiles.get(rn.nextInt(supportedFiles.size())).getName();
-		return name;
+	@Autowired
+	private FileService fileService;
+
+	public String getRandomVideo(String videoFilesPath) {
+		Optional<File> file = fileService.getRandomFileWithExtension(videoFilesPath, SupportedVideoFormat.MP4.getName());
+		return file.isPresent() ? file.get().getName() : "";
 	}
 
 	public InputStream getVideoStream(String videoPath) {
-
 		InputStream is = null;
-
 		try {
-			is = new FileInputStream(videoPath);
-//			is.close();
+			is = fileService.getFileStream(videoPath);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
 		return is;
-	}
-
-	class VideoResponse {
-		public String name;
-		public String url;
-		public VideoResponse(String name, String url) {
-			super();
-			this.name = name;
-			this.url = url;
-		}
-		
 	}
 }
 
