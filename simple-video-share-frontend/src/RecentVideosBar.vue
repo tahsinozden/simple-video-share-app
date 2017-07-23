@@ -3,10 +3,10 @@
 
         <h3>Recent Videos</h3>
         <div class="scrollmenu">
-            <div v-for="(video, index) in recentVideos">
+            <div v-for="videoObj in recentVideosObjectList" :key="videoObj.id">
                 <div>
-                    <video @click="selectVideo(index)">
-                        <source :src="video" type="video/mp4"></source>
+                    <video @click="selectVideo(videoObj.id)">
+                        <source :src="videoObj.url" type="video/mp4"></source>
                     </video>
                 </div>
             </div>
@@ -49,6 +49,8 @@ div.scrollmenu video:hover {
         data() {
             return {
                 recentVideos: [],
+                recentVideosObjectList: [],
+                videoCount: 0,
                 selectedVideo: ''
             }
         },
@@ -66,16 +68,16 @@ div.scrollmenu video:hover {
             },
             selectVideo(idx) {
                 console.log(idx);
-                this.selectedVideo = this.recentVideos[idx];
-                eventBus.$emit('selectedVideo', this.selectedVideo);
+                this.selectedVideo = this.recentVideosObjectList.find(item => item.id == idx);
+                eventBus.$emit('selectedVideo', this.selectedVideo.url);
             }
         },
         created() {
-            eventBus.$on("recentVideos", (videos) => {
+            eventBus.$on("newVideoUrl", (videoUrl) => {
                 console.log("new video added");
-                // TODO: show videos in reverse order
-                this.recentVideos = videos;
-                console.log(this.recentVideos);
+                this.recentVideosObjectList.unshift({id: this.videoCount, url: videoUrl});
+                console.log(this.videoUrl);
+                this.videoCount++;
             });
         },
         mounted: function() {

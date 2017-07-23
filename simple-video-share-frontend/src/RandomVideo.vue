@@ -29,11 +29,10 @@
         },
         methods: {
             loadRandVideo() {
-                // push the recent video to the stack before loading a new one
+                // send played video to recent videos
                 if (this.randVideoUrl != ''){
-                    this.recentVideos.push(this.randVideoUrl);
-                    // notify that the list is updated
-                    eventBus.$emit("recentVideos", this.recentVideos);
+                    // notify with new url
+                    eventBus.$emit("newVideoUrl", this.randVideoUrl);
                 }
                 
                 this.$http.get(config.BACK_END_URL + "/randomvideo")
