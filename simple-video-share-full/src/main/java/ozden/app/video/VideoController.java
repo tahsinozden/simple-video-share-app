@@ -1,9 +1,5 @@
 package ozden.app.video;
 
-/**
- * Created by tahsin on 2017-05-05.
- */
-
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,7 +10,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Paths;
 
-@CrossOrigin(allowedHeaders = "http://localhost:8081")
 @RestController
 public class VideoController {
 
