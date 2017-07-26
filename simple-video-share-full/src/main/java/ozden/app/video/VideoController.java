@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Paths;
+import java.util.Optional;
 
 @RestController
 public class VideoController {
@@ -16,44 +17,54 @@ public class VideoController {
     @Autowired
     private VideoService videoService;
 
+    @Autowired
+    private VideoMaskService videoMaskService;
+
     @Value("${multipart.location}")
     String savePath;
 
-
     @RequestMapping(value="/randomvideo")
     public VideoResponse getRandomVideo(){
-        // get a random video
-        String name = videoService.getRandomVideo(savePath);
-        return  new VideoResponse(name, "/allvideos/" + name );
+        Optional<String> fileNameOptional = videoService.getRandomVideoName(savePath);
+        String name = fileNameOptional.orElse("");
+        String maskedName = videoMaskService.getMaskedVideoName(name);
+
+        return new VideoResponse(maskedName);
     }
 
     @RequestMapping(value = "/allvideos/{fileName}", method = RequestMethod.GET)
     public void serveVideo(
             @PathVariable("fileName") String fileName,
             HttpServletResponse response) {
-        try {
-            // add the file extention to the file name
-            fileName += ".mp4";
-            String realFilePath = Paths.get(savePath, fileName).toString();
-            // get your file as InputStream
-            InputStream is = videoService.getVideoStream(realFilePath);
 
-            // copy it to response's OutputStream
-            IOUtils.copy(is, response.getOutputStream());
-            response.setContentType("video/mp4");
-            response.flushBuffer();
-        } catch (IOException ex) {
-            throw new RuntimeException("IOError writing file to output stream" + ex);
+            try {
+                buildResponseVideoStream(response, fileName);
+
+            } catch (IOException e) {
+                throw new RuntimeException("IOError writing file to output stream" + e);
+            }
+    }
+
+    private void buildResponseVideoStream(HttpServletResponse response, String fileName) throws IOException {
+        Optional<String> videoOptional = videoMaskService.getRealVideoName(fileName);
+        if (!videoOptional.isPresent()) {
+            return;
         }
 
+        String realFilePath = Paths.get(savePath, videoOptional.get()).toString();
+        InputStream is = videoService.getVideoStream(realFilePath);
+
+        IOUtils.copy(is, response.getOutputStream());
+        response.setContentType("video/mp4");
+        response.flushBuffer();
     }
 
     class VideoResponse {
         public String name;
         public String url;
-        public VideoResponse(String name, String url) {
+        public VideoResponse(String name) {
             this.name = name;
-            this.url = url;
+            this.url = "/allvideos/" + name;
         }
 
     }

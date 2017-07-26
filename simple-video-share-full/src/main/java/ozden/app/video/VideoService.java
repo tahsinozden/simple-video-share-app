@@ -1,9 +1,9 @@
 package ozden.app.video;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
-import java.util.Optional;
+import java.util.*;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ozden.app.common.FileService;
@@ -14,9 +14,9 @@ public class VideoService {
 	@Autowired
 	private FileService fileService;
 
-	public String getRandomVideo(String videoFilesPath) {
+	public Optional<String> getRandomVideoName(String videoFilesPath) {
 		Optional<File> file = fileService.getRandomFileWithExtension(videoFilesPath, SupportedVideoFormat.MP4.getName());
-		return file.isPresent() ? file.get().getName() : "";
+		return file.isPresent() ? Optional.of(file.get().getName()) : Optional.empty();
 	}
 
 	public InputStream getVideoStream(String videoPath) {

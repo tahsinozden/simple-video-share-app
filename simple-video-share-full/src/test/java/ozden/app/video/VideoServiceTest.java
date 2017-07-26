@@ -37,9 +37,9 @@ public class VideoServiceTest {
         Optional<File> randomFile = Optional.of(new File("newFile.mp4"));
         when(fileService.getRandomFileWithExtension(DIR_PATH, SupportedVideoFormat.MP4.getName())).thenReturn(randomFile);
 
-        String randomVideo = videoService.getRandomVideo(DIR_PATH);
-        assertNotNull(randomVideo);
-        assertTrue(randomVideo.endsWith(SupportedVideoFormat.MP4.getName()));
+        Optional<String> randomVideo = videoService.getRandomVideoName(DIR_PATH);
+        assertTrue(randomVideo.isPresent());
+        assertTrue(randomVideo.get().endsWith(SupportedVideoFormat.MP4.getName()));
     }
 
     @Test
@@ -47,8 +47,8 @@ public class VideoServiceTest {
         Optional<File> randomFile = Optional.empty();
         when(fileService.getRandomFileWithExtension("invalidPath", SupportedVideoFormat.MP4.getName())).thenReturn(randomFile);
 
-        String randomVideo = videoService.getRandomVideo("invalidPath");
-        assertEquals("", randomVideo);
+        Optional<String> randomVideo = videoService.getRandomVideoName("invalidPath");
+        assertFalse(randomVideo.isPresent());
     }
 
     @Test
