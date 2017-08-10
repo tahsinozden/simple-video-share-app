@@ -3,7 +3,10 @@ package ozden.app.video;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -54,8 +57,8 @@ public class VideoController {
         String realFilePath = Paths.get(savePath, videoOptional.get()).toString();
         InputStream is = videoService.getVideoStream(realFilePath);
 
-        IOUtils.copy(is, response.getOutputStream());
         response.setContentType("video/mp4");
+        IOUtils.copy(is, response.getOutputStream());
         response.flushBuffer();
     }
 
