@@ -1,12 +1,12 @@
 package ozden.app.video;
 
-import java.io.File;
-import java.io.InputStream;
-import java.util.*;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ozden.app.common.FileService;
+
+import java.io.File;
+import java.io.InputStream;
+import java.util.Optional;
 
 @Service
 public class VideoService {

@@ -12,7 +12,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 public class VideoApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(VideoApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(VideoApplication.class, args);
+    }
 }
