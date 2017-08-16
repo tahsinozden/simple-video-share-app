@@ -12,7 +12,8 @@ import java.io.FileInputStream;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class VideoServiceTest {
 
