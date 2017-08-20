@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 import static org.springframework.util.CollectionUtils.isEmpty;
 
@@ -39,6 +40,16 @@ public class VideoService {
         return file.isPresent() ? Optional.of(file.get().getName()) : Optional.empty();
     }
 
+    public Optional<Video> getRandomVideo() {
+        List<Video> videos = videoRepository.findByVideoFilePathLike("%." + SupportedVideoFormat.MP4.getName());
+        
+        return isEmpty(videos) ? Optional.empty() :
+                new Random()
+                    .ints(100, 0, videos.size())
+                    .mapToObj(i -> videos.get(i))
+                    .findFirst();
+    }
+
     public InputStream getVideoStream(String videoPath) {
         InputStream is = null;
         try {
@@ -55,10 +66,10 @@ public class VideoService {
             throw new IllegalArgumentException("file is null!");
         }
 
-        String videoName = file.getName();
-        String savedFilePath;
+        String videoName = file.getOriginalFilename();
+        File savedFile;
         try {
-            savedFilePath = fileService.saveFile(file);
+            savedFile = fileService.saveFile(file);
         } catch (IOException e) {
             e.printStackTrace();
             return Optional.empty();
@@ -66,7 +77,7 @@ public class VideoService {
 
 
         String videoTagIds = createVideoTags(videoTagNames);
-        Video newVideo = new Video(videoName, "", videoTagIds, savedFilePath, LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
+        Video newVideo = new Video(savedFile.getName(), "", videoTagIds, savedFile.getAbsolutePath(), LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
         newVideo = videoRepository.save(newVideo);
 
         return Optional.of(newVideo);
@@ -99,6 +110,10 @@ public class VideoService {
                 });
 
         return tagString.toString();
+    }
+
+    public List<VideoTag> getVideoTagsById(List<Integer> ids) {
+        return videoTagRepository.findByTagIdIn(ids);
     }
 
 }

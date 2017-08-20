@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -39,11 +40,22 @@ public class FileService {
         return new FileInputStream(filePath);
     }
 
-    public String saveFile(MultipartFile file) throws IOException {
+    public File saveFile(MultipartFile file) throws IOException {
         String fileName = savePath + "file_" + System.currentTimeMillis() + "_" + file.getOriginalFilename();
-        File fileToBeSaved = new File(fileName);
+//        File fileToBeSaved = new File(fileName);
+        StringBuilder fileFullPathName = new StringBuilder()
+                .append(savePath)
+                .append("file_")
+                .append(System.currentTimeMillis())
+                .append("_")
+                .append(file.getOriginalFilename());
+
+        File fileToBeSaved = Paths.get(fileFullPathName.toString())
+                .normalize()
+                .toFile();
+
         file.transferTo(fileToBeSaved);
 
-        return fileName;
+        return fileToBeSaved;
     }
 }

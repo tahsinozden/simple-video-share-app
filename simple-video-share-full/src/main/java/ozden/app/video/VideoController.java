@@ -3,10 +3,8 @@ package ozden.app.video;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import ozden.app.video.persistance.Video;
 import ozden.app.video.persistance.VideoTag;
 
 import javax.servlet.http.HttpServletResponse;
@@ -15,9 +13,14 @@ import java.io.InputStream;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static org.springframework.util.CollectionUtils.isEmpty;
 
 @RestController
 public class VideoController {
+
+    private final String VIDEO_SERVE_PATH = "/allvideos/";
 
     @Autowired
     private VideoService videoService;
@@ -37,6 +40,21 @@ public class VideoController {
         return new VideoResponse(maskedName);
     }
 
+    @RequestMapping(value="/api/v2/randomvideo")
+    public Video getRandomVideoObject(){
+        Optional<Video> videoOptional = videoService.getRandomVideo();
+        if (!videoOptional.isPresent()) {
+            return new Video();
+        }
+
+        Video video = videoOptional.get();
+        String maskedVideoName = videoMaskService.getMaskedVideoName(video.getVideoName());
+        video.setVideoName(maskedVideoName);
+        video.setVideoFilePath(VIDEO_SERVE_PATH + maskedVideoName);
+
+        return video;
+    }
+
     @RequestMapping(value = "/allvideos/{fileName}", method = RequestMethod.GET)
     public void serveVideo(
             @PathVariable("fileName") String fileName,
@@ -51,7 +69,14 @@ public class VideoController {
     }
 
     @RequestMapping(value = "/data/videotags")
-    public List<VideoTag> getAllVideoTags() {
+    public List<VideoTag> getAllVideoTags(@RequestParam(value = "ids", required = false) List<String> ids) {
+        if (!isEmpty(ids)) {
+            List<Integer> intIds = ids.stream()
+                    .filter(item -> !item.equals(""))
+                    .map(Integer::valueOf)
+                    .collect(Collectors.toList());
+            return videoService.getVideoTagsById(intIds);
+        }
         return videoService.getAllVideoTags();
     }
 
