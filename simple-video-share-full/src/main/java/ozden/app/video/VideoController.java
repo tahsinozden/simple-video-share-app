@@ -7,11 +7,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import ozden.app.video.persistance.VideoTag;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -46,6 +48,11 @@ public class VideoController {
             } catch (IOException e) {
                 throw new RuntimeException("IOError writing file to output stream" + e);
             }
+    }
+
+    @RequestMapping(value = "/data/videotags")
+    public List<VideoTag> getAllVideoTags() {
+        return videoService.getAllVideoTags();
     }
 
     private void buildResponseVideoStream(HttpServletResponse response, String fileName) throws IOException {

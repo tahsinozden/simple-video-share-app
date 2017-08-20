@@ -1,11 +1,10 @@
 package ozden.app.common;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -14,6 +13,9 @@ import java.util.stream.Collectors;
 
 @Component
 public class FileService {
+    @Value("${multipart.location}")
+    String savePath;
+
     public List<File> getAllFilesUnderDirectory(String path) {
         File folder = new File(path);
         return Arrays.asList(folder.listFiles());
@@ -35,5 +37,13 @@ public class FileService {
 
     public InputStream getFileStream(String filePath) throws FileNotFoundException {
         return new FileInputStream(filePath);
+    }
+
+    public String saveFile(MultipartFile file) throws IOException {
+        String fileName = savePath + "file_" + System.currentTimeMillis() + "_" + file.getOriginalFilename();
+        File fileToBeSaved = new File(fileName);
+        file.transferTo(fileToBeSaved);
+
+        return fileName;
     }
 }
