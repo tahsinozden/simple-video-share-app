@@ -65,8 +65,7 @@ public class VideoService {
         if (file == null) {
             throw new IllegalArgumentException("file is null!");
         }
-
-        String videoName = file.getOriginalFilename();
+        
         File savedFile;
         try {
             savedFile = fileService.saveFile(file);
@@ -75,8 +74,13 @@ public class VideoService {
             return Optional.empty();
         }
 
+        String videoTagIds;
+        if (!isEmpty(videoTagNames)) {
+            videoTagIds = createVideoTags(videoTagNames);
+        } else {
+            videoTagIds = getDefaultTagIdForVideo();
+        }
 
-        String videoTagIds = createVideoTags(videoTagNames);
         Video newVideo = new Video(savedFile.getName(), "", videoTagIds, savedFile.getAbsolutePath(), LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
         newVideo = videoRepository.save(newVideo);
 
@@ -89,13 +93,10 @@ public class VideoService {
 
     private String createVideoTags(List<String> videoTagNames) {
         if (isEmpty(videoTagNames)) {
-            VideoTag tag = new VideoTag(DEFAULT_VIDEO_TAG_NAME);
-            tag = videoTagRepository.save(tag);
-            return tag.getTagName();
+            return "";
         }
 
         StringBuilder tagString = new StringBuilder();
-
         videoTagNames.stream()
                 .forEach(name -> {
                     VideoTag videoTag;
@@ -116,5 +117,22 @@ public class VideoService {
         return videoTagRepository.findByTagIdIn(ids);
     }
 
+    private String getDefaultTagIdForVideo() {
+        String tagId = "";
+        List<VideoTag> tags = videoTagRepository.findByTagName(DEFAULT_VIDEO_TAG_NAME);
+        if (isEmpty(tags)) {
+            tagId = createDefaultVideoTag().getTagId() + TAG_ID_SEPERATOR;
+        } else {
+            tagId = tags.get(0).getTagId() + TAG_ID_SEPERATOR;
+        }
+
+        return tagId;
+    }
+
+    private VideoTag createDefaultVideoTag() {
+        VideoTag tag = new VideoTag(DEFAULT_VIDEO_TAG_NAME);
+        tag = videoTagRepository.save(tag);
+        return tag;
+    }
 }
 
