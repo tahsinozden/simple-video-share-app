@@ -41,8 +41,8 @@ public class VideoController {
     }
 
     @RequestMapping(value="/api/v2/randomvideo")
-    public Video getRandomVideoObject(){
-        Optional<Video> videoOptional = videoService.getRandomVideo();
+    public Video getRandomVideoObject(@RequestParam(value = "tagIds", required = false) List<String> tagIds){
+        Optional<Video> videoOptional = videoService.getRandomVideoByTagIds(tagIds);
         if (!videoOptional.isPresent()) {
             return new Video();
         }

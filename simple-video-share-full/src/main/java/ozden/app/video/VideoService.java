@@ -2,6 +2,7 @@ package ozden.app.video;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 import ozden.app.common.FileService;
 import ozden.app.video.persistance.Video;
@@ -14,9 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 import static org.springframework.util.CollectionUtils.isEmpty;
 
@@ -40,14 +39,48 @@ public class VideoService {
         return file.isPresent() ? Optional.of(file.get().getName()) : Optional.empty();
     }
 
+    public Optional<Video> getRandomVideoByTagIds(List<String> tagIds) {
+        if (CollectionUtils.isEmpty(tagIds)) {
+            return getRandomVideo();
+        }
+
+        List<Video> videos = videoRepository.findByVideoFilePathLike("%." + SupportedVideoFormat.MP4.getName());
+        Map<Video, HashSet<String>> pairs = getVideoAndTagIdsPair(videos);
+        Set<String> ids = new HashSet<>(tagIds);
+
+        for (Map.Entry<Video, HashSet<String>> pair : pairs.entrySet()) {
+            if (pair.getValue().containsAll(ids)) {
+                return Optional.of(pair.getKey());
+            }
+        }
+
+        return Optional.empty();
+    }
+
     public Optional<Video> getRandomVideo() {
         List<Video> videos = videoRepository.findByVideoFilePathLike("%." + SupportedVideoFormat.MP4.getName());
-        
+        return generateRandomVideoFromVideoList(videos);
+    }
+
+    private Map<Video, HashSet<String>> getVideoAndTagIdsPair(List<Video> videos) {
+        Map<Video, HashSet<String>> pairs = new HashMap<>();
+        for (Video video : videos) {
+            pairs.put(video, getVideoTagIdsAsList(video.getVideoTagIds()));
+        }
+
+        return pairs;
+    }
+
+    private HashSet<String> getVideoTagIdsAsList(String ids) {
+        return new HashSet<>(Arrays.asList(ids.split(TAG_ID_SEPERATOR)));
+    }
+
+    private Optional<Video> generateRandomVideoFromVideoList(List<Video> videos) {
         return isEmpty(videos) ? Optional.empty() :
                 new Random()
-                    .ints(100, 0, videos.size())
-                    .mapToObj(i -> videos.get(i))
-                    .findFirst();
+                        .ints(100, 0, videos.size())
+                        .mapToObj(i -> videos.get(i))
+                        .findFirst();
     }
 
     public InputStream getVideoStream(String videoPath) {
