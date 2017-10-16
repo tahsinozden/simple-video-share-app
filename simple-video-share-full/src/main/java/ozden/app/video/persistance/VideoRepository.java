@@ -8,4 +8,6 @@ public interface VideoRepository extends JpaRepository<Video, Integer> {
     List<Video> findByVideoId(Integer videoId);
     List<Video> findByVideoName(String videoName);
     List<Video> findByVideoFilePathLike(String pathLike);
+
+    List<Video> findByVideoIdIn(List<Integer> videoIds);
 }
