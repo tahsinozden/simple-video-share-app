@@ -16,16 +16,6 @@ public class UserVideoController {
     @Autowired
     private UserVideoService userVideoService;
 
-//    @GetMapping
-//    public String hello(HttpSession httpSession) {
-//        String message = "nayirrrr";
-//        AuthToken token = (AuthToken)httpSession.getAttribute(TOKEN_NAME);
-//        if (token != null) {
-//            message ="Hello there";
-//        }
-//        return message;
-//    }
-
     @PostMapping("save")
     public void saveUserVideo(@RequestParam String userName, @RequestParam List<Integer> videoIds) {
         userVideoService.saveUserVideo(userName, videoIds);
