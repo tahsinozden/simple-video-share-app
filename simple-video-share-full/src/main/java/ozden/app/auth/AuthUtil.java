@@ -16,7 +16,7 @@ public class AuthUtil {
     public static final String TOKEN_NAME = "token";
 
     private static final Set<User> ALL_USERS = new HashSet<>();
-    private static final Map<String, AuthToken> ACTIVE_USERS = new ConcurrentHashMap<>();
+    private static final Map<String, Integer> ACTIVE_USERS = new ConcurrentHashMap<>();
 
     static {
         ALL_USERS.add(new User("user1", "pass1"));
@@ -25,19 +25,20 @@ public class AuthUtil {
         ALL_USERS.add(new User("user4", "pass4"));
     }
 
-    public boolean isUserLoggedIn(String userName, AuthToken authToken) {
-        AuthToken auth = ACTIVE_USERS.get(userName);
+    public boolean isUserLoggedIn(String userName, Integer authToken) {
+        Integer auth = ACTIVE_USERS.get(userName);
         return auth != null && auth.equals(authToken);
     }
 
-    public Optional<AuthToken> login(User user) {
+    public Optional<Integer> login(User user) {
         if (!ALL_USERS.contains(user)) {
             return Optional.empty();
         }
 
         AuthToken authToken = new AuthToken(user, LocalDateTime.now());
-        ACTIVE_USERS.put(user.getUserName(), authToken);
-        return Optional.of(authToken);
+        int token = authToken.hashCode();
+        ACTIVE_USERS.put(user.getUserName(), token);
+        return Optional.of(token);
     }
 
     public void logout(String userName) {

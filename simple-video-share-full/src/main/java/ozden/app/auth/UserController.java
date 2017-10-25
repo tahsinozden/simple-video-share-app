@@ -22,10 +22,10 @@ public class UserController {
 
     @PostMapping("login")
     public long login(@RequestBody User user, HttpSession httpSession) {
-        Optional<AuthToken> token = authUtil.login(user);
+        Optional<Integer> token = authUtil.login(user);
         if (token.isPresent()) {
             httpSession.setAttribute(TOKEN_NAME, token);
-            return token.hashCode();
+            return token.get();
         }
         return AuthUtil.INVALID_TOKEN;
     }
@@ -36,8 +36,32 @@ public class UserController {
         authUtil.logout(userName);
     }
 
-    class AuthBean {
+    static class AuthBean {
         String userName;
-        AuthToken authToken;
+        Integer authToken;
+
+        public AuthBean(String userName, Integer authToken) {
+            this.userName = userName;
+            this.authToken = authToken;
+        }
+
+        public AuthBean() {
+        }
+
+        public String getUserName() {
+            return userName;
+        }
+
+        public void setUserName(String userName) {
+            this.userName = userName;
+        }
+
+        public Integer getAuthToken() {
+            return authToken;
+        }
+
+        public void setAuthToken(Integer authToken) {
+            this.authToken = authToken;
+        }
     }
 }
