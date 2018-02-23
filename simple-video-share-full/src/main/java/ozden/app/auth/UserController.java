@@ -17,7 +17,7 @@ public class UserController {
 
     @PostMapping("authenticate")
     public boolean isLoggedIn(@RequestBody AuthBean authBean) {
-        return authBean != null && authUtil.isUserLoggedIn(authBean.userName, authBean.authToken);
+        return authBean != null && authUtil.isUserLoggedIn(authBean.getUserName(), authBean.getAuthToken());
     }
 
     @PostMapping("login")
@@ -34,34 +34,5 @@ public class UserController {
     public void logout(@RequestParam String userName, HttpSession httpSession) {
         httpSession.setAttribute(TOKEN_NAME, null);
         authUtil.logout(userName);
-    }
-
-    static class AuthBean {
-        String userName;
-        Integer authToken;
-
-        public AuthBean(String userName, Integer authToken) {
-            this.userName = userName;
-            this.authToken = authToken;
-        }
-
-        public AuthBean() {
-        }
-
-        public String getUserName() {
-            return userName;
-        }
-
-        public void setUserName(String userName) {
-            this.userName = userName;
-        }
-
-        public Integer getAuthToken() {
-            return authToken;
-        }
-
-        public void setAuthToken(Integer authToken) {
-            this.authToken = authToken;
-        }
     }
 }

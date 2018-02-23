@@ -1,10 +1,8 @@
 package ozden.app.video.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import ozden.app.auth.AuthBean;
 
 import java.util.List;
 
@@ -17,7 +15,36 @@ public class UserVideoController {
     private UserVideoService userVideoService;
 
     @PostMapping("save")
-    public void saveUserVideo(@RequestParam String userName, @RequestParam List<Integer> videoIds) {
-        userVideoService.saveUserVideo(userName, videoIds);
+    public void saveUserVideo(@RequestBody RequestBean requestBean) {
+        userVideoService.saveUserVideo(requestBean.getAuthBean(), requestBean.getVideoIds());
+    }
+
+    static final class RequestBean {
+        AuthBean authBean;
+        List<Integer> videoIds;
+
+        public RequestBean() {
+        }
+
+        public RequestBean(AuthBean authBean, List<Integer> videoIds) {
+            this.authBean = authBean;
+            this.videoIds = videoIds;
+        }
+
+        public AuthBean getAuthBean() {
+            return authBean;
+        }
+
+        public void setAuthBean(AuthBean authBean) {
+            this.authBean = authBean;
+        }
+
+        public List<Integer> getVideoIds() {
+            return videoIds;
+        }
+
+        public void setVideoIds(List<Integer> videoIds) {
+            this.videoIds = videoIds;
+        }
     }
 }

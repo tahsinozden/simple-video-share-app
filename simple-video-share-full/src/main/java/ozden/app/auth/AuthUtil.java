@@ -26,6 +26,9 @@ public class AuthUtil {
     }
 
     public boolean isUserLoggedIn(String userName, Integer authToken) {
+        if (userName == null || authToken == null) {
+            return false;
+        }
         Integer auth = ACTIVE_USERS.get(userName);
         return auth != null && auth.equals(authToken);
     }
