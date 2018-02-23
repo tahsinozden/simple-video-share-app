@@ -167,5 +167,9 @@ public class VideoService {
         tag = videoTagRepository.save(tag);
         return tag;
     }
+
+    public List<Video> getVideoByIds(List<Integer> videoIds) {
+        return videoRepository.findByVideoIdIn(videoIds);
+    }
 }
 

@@ -28,4 +28,8 @@ public class UserVideoService {
         String userName = authBean.getUserName();
         userToVideoRepository.save(new UserToVideo(userName, ids));
     }
+
+    public List<UserToVideo> findVideosByUserName(String userName) {
+        return userToVideoRepository.findByUserName(userName);
+    }
 }
