@@ -1,26 +1,27 @@
 package ozden.app.video.persistance;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "UserToVideo")
 public class UserToVideo {
     @Id
+    @GeneratedValue
+    @Column(name = "id")
+    private Integer id;
+
     @Column(name = "userName")
     private String userName;
 
     @Column(name = "videoId")
     private String videoIds;
 
-    public UserToVideo() {
-    }
-
     public UserToVideo(String userName, String videoIds) {
         this.userName = userName;
         this.videoIds = videoIds;
+    }
+
+    public UserToVideo() {
     }
 
     public String getUserName() {
