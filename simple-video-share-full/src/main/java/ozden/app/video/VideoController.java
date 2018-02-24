@@ -80,6 +80,12 @@ public class VideoController {
         return videoService.getAllVideoTags();
     }
 
+    // TODO: don't return whole video info, return bean or just names
+    @GetMapping("data/video")
+    public List<Video> getVideoByIds(@RequestParam(value = "videoIds", required = true) List<Integer> videoIds) {
+        return videoService.getVideoByIds(videoIds);
+    }
+
     private void buildResponseVideoStream(HttpServletResponse response, String fileName) throws IOException {
         Optional<String> videoOptional = videoMaskService.getRealVideoName(fileName);
         if (!videoOptional.isPresent()) {
